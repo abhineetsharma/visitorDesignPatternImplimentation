@@ -1,4 +1,4 @@
-<project name="studentCoursesBackup" default="compile_all" basedir="..">
+<project name="backupVisitors" default="compile_all" basedir="..">
 
     <property name="BUILD.compiler"       value="modern"/>
     <property name="src"                  value="src"/>
@@ -8,7 +8,7 @@
     <target name="all" depends="compile_all"/>
 
     <target name="compile_all"
-            depends="studentCoursesBackup"/>
+            depends="backupVisitors"/>
 
     <target name="clean">
         <delete dir="${BUILD}"/>
@@ -23,9 +23,9 @@
 
     <target name="jar">
         <mkdir dir="${BUILD}/jar"/>
-        <jar destfile="${BUILD}/jar/studentCoursesBackup.jar" basedir="${BUILD}/classes">
+        <jar destfile="${BUILD}/jar/backupVisitors.jar" basedir="${BUILD}/classes">
             <manifest>
-                <attribute name="Main-Class" value="studentCoursesBackup.driver.Driver"/>
+                <attribute name="Main-Class" value="backupVisitors.driver.Driver"/>
             </manifest>
         </jar>
     </target>
@@ -34,9 +34,9 @@
     <!-- * means all files in the current directory -->
     <!-- for just java files use *.java -->
 
-    <target name="studentCoursesBackup" depends="prepare">
+    <target name="backupVisitors" depends="prepare">
         <javac srcdir="${src}"
-               includes="studentCoursesBackup/**"
+               includes="backupVisitors/**"
                excludes="**/package.html"
                destdir="${classes}"
                classpath="${classes}"
@@ -46,7 +46,7 @@
     </target>
 
     <target name="run" depends="jar">
-        <java jar="${BUILD}/jar/studentCoursesBackup.jar" fork="true">
+        <java jar="${BUILD}/jar/backupVisitors.jar" fork="true">
             <arg value="${arg0}"/>
             <arg value="${arg1}"/>
             <arg value="${arg2}"/>

@@ -1,4 +1,4 @@
-package studentCoursesBackup.myTree;
+package backupVisitors.myTree;
 
 import java.util.ArrayList;
 
@@ -20,8 +20,7 @@ public class Node implements ObserverI, SubjectI, Cloneable {
         id = idI;
         left = null;
         right = null;
-        courseList = new ArrayList <>();
-        courseList.add(courseName);
+        addCourse(courseName);
 
     }
 
@@ -29,10 +28,15 @@ public class Node implements ObserverI, SubjectI, Cloneable {
      * Add course to current node
      */
     public  void addCourse(String courseName) {
+
+        int courseASCII = (int)courseName.charAt(0);
+        if (courseASCII >= (int)'A' && courseASCII <= (int)'K' || courseASCII == (int)'S');
+        else courseName = null;
+
         if (null == getCourseList()) {
             courseList = new ArrayList <>();
         }
-        if (!courseList.contains(courseName))
+        if (null != courseName && !courseList.contains(courseName))
             courseList.add(courseName);
     }
 

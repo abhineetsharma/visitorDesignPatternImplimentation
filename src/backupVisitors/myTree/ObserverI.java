@@ -1,4 +1,4 @@
-package studentCoursesBackup.myTree;
+package backupVisitors.myTree;
 
 /**
  * Interface ObserverI
