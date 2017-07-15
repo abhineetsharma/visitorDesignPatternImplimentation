@@ -2,21 +2,21 @@ package backupVisitors.visitor;
 
 import backupVisitors.myTree.Node;
 import backupVisitors.util.TreeBuilder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  * Created by abhineetsharma on 7/12/17.
  */
 public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
-    HashMap <String, Set<Integer>> courseRecords;
+    Map <String, Set <Integer>> courseRecords;
 
     @Override
     public void visit(TreeBuilder tree) {
+        System.out.println("Identical");
         courseRecords = new HashMap <>();
         traverse(tree.getRoot());
+
         iterateRecords();
     }
 
@@ -28,33 +28,36 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
         }
     }
 
-    public void process(Node node) {
+    private void process(Node node) {
         if (null != node) {
             int id = node.getId();
-            for (String courseName : node.getCourseList()) {
-                Object obj = courseRecords.get(courseName);
-                if (null == obj) {
-                    Set<Integer> studentsId = new HashSet<>();
-                    studentsId.add(id);
-                    courseRecords.put(courseName, studentsId);
-                } else {
-                    Set<Integer> studentsId = (Set<Integer>)obj;
-                    studentsId.add(id);
-                    //courseRecords.put(courseName, studentsId);
-                }
+
+            String courseEnrolled = node.getCourseList().toString();
+            Object obj = courseRecords.get(courseEnrolled);
+            if (null == obj) {
+                SortedSet <Integer> studentsId = new TreeSet <>();
+                studentsId.add(id);
+                courseRecords.put(courseEnrolled, studentsId);
+            } else {
+                SortedSet <Integer> studentsId = (SortedSet <Integer>) obj;
+                studentsId.add(id);
             }
+
         }
     }
 
-    public void iterateRecords() {
-        for (Map.Entry <String, Set <Integer>> entry : courseRecords.entrySet()) {
-            String key = entry.getKey();
-            Set<Integer> value = entry.getValue();
-            StringBuilder sbr = new StringBuilder();
-            for(Integer i: value){
-                sbr.append(i+" ");
-            }
-            System.out.println(key+" "+sbr.toString());
+    private void iterateRecords() {
+        Map<String, SortedSet <Integer>> orderedMap = new TreeMap(courseRecords);
+        for (Map.Entry <String, SortedSet <Integer>> entry : orderedMap.entrySet()) {
+            String courseEnrolled = entry.getKey();
+
+            SortedSet <Integer> studentsEnrolled = entry.getValue();
+            System.out.println("Course Names: " + beautifyString(courseEnrolled) + " Students Enrolled: " + beautifyString(studentsEnrolled.toString()));
         }
+    }
+
+    private String beautifyString(String str) {
+        str = str.substring(1, str.length() - 1);
+        return str;
     }
 }

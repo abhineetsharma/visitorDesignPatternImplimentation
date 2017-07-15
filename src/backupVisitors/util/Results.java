@@ -1,24 +1,19 @@
 package backupVisitors.util;
 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
-import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 
 public class Results implements StdoutDisplayInterface, FileDisplayInterface {
 
+    private StringBuilder stringBuilderStorage = new StringBuilder();
+    private String outputPath;
+
     public Results(String path) {
         outputPath = null;
-        if(null !=path && path.trim().length() >0)
+        if (null != path && path.trim().length() > 0)
             outputPath = path;
     }
-
-    private StringBuilder stringBuilderStorage = new StringBuilder();
-
-    private String outputPath;
 
     public void storeNewResult(Object obj) {
         String str = obj.toString();
@@ -28,9 +23,9 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
         stringBuilderStorage.append(str);
     }
 
-    public void addTextSeprator(){
+    public void addTextSeprator() {
         StringBuilder sbr = new StringBuilder("\n");
-        for(int i =0;i<72;i++){
+        for (int i = 0; i < 72; i++) {
             sbr.append("-");
         }
         sbr.append("\n");
@@ -60,8 +55,7 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
                     String str = getStoredString();
                     writer.write(str);
                 }
-            }
-            else{
+            } else {
                 String msg = "No output file found, file either is null or a blank string";
                 //storeNewResult(msg);
             }

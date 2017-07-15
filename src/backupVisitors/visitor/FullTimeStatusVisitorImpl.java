@@ -2,7 +2,6 @@ package backupVisitors.visitor;
 
 
 import backupVisitors.myTree.Node;
-import backupVisitors.util.Results;
 import backupVisitors.util.TreeBuilder;
 
 /**
@@ -19,7 +18,7 @@ public class FullTimeStatusVisitorImpl implements TreeVisitorI{
         if (node != null) {
             traverse( node.getLeft(),tree);
             if(null != node.getCourseList() && !node.getCourseList().contains("S") && node.getCourseList().size()<3){
-                tree.insertNode(node.getId(),"S");
+                tree.insertCourseForId(node.getId(),"S");
             }
             traverse( node.getRight(),tree);
         }

@@ -2,6 +2,7 @@ package backupVisitors.visitor;
 
 import backupVisitors.myTree.Node;
 import backupVisitors.util.TreeBuilder;
+import java.util.TreeSet;
 
 /**
  * Created by abhineetsharma on 7/12/17.
@@ -9,17 +10,14 @@ import backupVisitors.util.TreeBuilder;
 public class SortedRecordsVisitorImpl implements TreeVisitorI {
     @Override
     public void visit(TreeBuilder tree) {
-        traverse(tree.getRoot(),tree);
+        traverse(tree.getRoot());
     }
 
-    public void traverse(Node node, TreeBuilder tree) {
+    private void traverse(Node node) {
         if (node != null) {
-            traverse( node.getRight(),tree);
-
-            System.out.println(node.getId()+ " "+node.getCourseList());
-            traverse( node.getLeft(),tree);
-
-
+            traverse(node.getRight());
+            System.out.println(node.getId() + " " + node.getCourseList());
+            traverse(node.getLeft());
         }
     }
 }

@@ -21,7 +21,7 @@ public class TreeBuilder {
     }
 
     /**
-     * Calls the recursive part og insertNode with root node
+     * Calls the recursive part og insertCourseForId with root node
      */
     private void insertNodeIntoTree(Node node) {
         root = insertRecord(getRoot(), node);
@@ -34,9 +34,9 @@ public class TreeBuilder {
         if (currentNode == null) {
             currentNode = node;
             return currentNode;
-        } else if (node.getId() < currentNode.getId())
+        } else if (node.compareTo(currentNode) == -1)
             currentNode.setLeft(insertRecord(currentNode.getLeft(), node));
-        else if (node.getId() > currentNode.getId())
+        else if (node.compareTo(currentNode) == 1)
             currentNode.setRight(insertRecord(currentNode.getRight(), node));
         return currentNode;
     }
@@ -46,14 +46,16 @@ public class TreeBuilder {
      */
     private Node searchRec(Node node, int id) {
         Node result = null;
-        if (node == null)
+        int nodeId;
+        if (node == null) {
             return null;
-        else if (node.getId() == id)
+        } else if ((nodeId=node.getId()) == id) {
             return node;
-        else if (node.getId() > id)
+        } else if (nodeId > id) {
             result = searchRec(node.getLeft(), id);
-        else if (node.getId() < id)
+        } else if (nodeId < id) {
             result = searchRec(node.getRight(), id);
+        }
 
         return result;
     }
@@ -69,14 +71,9 @@ public class TreeBuilder {
 
             if (node.getCourseList().size() == 0)
                 sbr.append("No course enrolled");
-            else
-                for (String str : node.getCourseList())
-                    sbr.append(String.format("%s, ", str));
+            else sbr.append(node.getCourseList());
 
-            if (sbr.charAt(sbr.length() - 2) == ',')
-                sbr.deleteCharAt(sbr.length() - 2);
-
-            results.storeNewResult(String.format("Student id : %d %s", node.getId(), sbr.toString().trim()));
+            results.storeNewResult(String.format("Student id : %d %s", node.getId(), sbr.toString()));
 
             printNodeRec(results, node.getRight());
         }
@@ -86,7 +83,7 @@ public class TreeBuilder {
      * Search the node with a given id
      */
     public Node searchNode(int id) {
-        return searchRec(getRoot(), id);
+        return searchRec(root, id);
     }
 
     /**
@@ -101,12 +98,12 @@ public class TreeBuilder {
      * After creating a new node if node is not present in the tree and
      * clone it two times as backup nodes and dave it as a observer of the main node
      */
-    public String insertNode(int id, String courseName) {
+    public String insertCourseForId(int id, String courseName) {
         Node node;
 
         if (null != courseName && (node = searchNode(id)) != null) {
             node.addCourse(courseName);
-            node.notifyAllObservers("insert", courseName);
+            node.notify("insert", courseName);
         } else {
             node = new Node(id, courseName);
             insertNodeIntoTree(node);
@@ -134,12 +131,12 @@ public class TreeBuilder {
     /**
      * Remove a course from the node
      */
-    public String removeCourseFromNode(int id, String courseName) {
+    public String removeCourseFromNodeAndObservers(int id, String courseName) {
         Node node;
 
         if ((node = searchNode(id)) != null) {
             node.removeCourse(courseName);
-            node.notifyAllObservers("delete", courseName);
+            node.notify("delete", courseName);
         }
         return node.getCourseList().size() > 0 ? node.getCourseList().toString() : "No course enrolled";
     }

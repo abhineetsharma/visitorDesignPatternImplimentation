@@ -1,14 +1,17 @@
 package backupVisitors.myTree;
 
+import java.util.SortedSet;
 import java.util.ArrayList;
+import java.util.TreeSet;
+
 
 /**
  * Created by abhineetsharma on 6/29/17.
  */
-public class Node implements ObserverI, SubjectI, Cloneable {
+public class Node implements ObserverI, SubjectI, Cloneable ,Comparable<Node>{
     private ArrayList <ObserverI> observerList;
     private int id;
-    private ArrayList <String> courseList;
+    private SortedSet<String> courseList;
     private Node left;
     private Node right;
 
@@ -34,9 +37,9 @@ public class Node implements ObserverI, SubjectI, Cloneable {
         else courseName = null;
 
         if (null == getCourseList()) {
-            courseList = new ArrayList <>();
+            courseList = new TreeSet <>();
         }
-        if (null != courseName && !courseList.contains(courseName))
+        if (null != courseName)// && !courseList.contains(courseName))
             courseList.add(courseName);
     }
 
@@ -44,7 +47,7 @@ public class Node implements ObserverI, SubjectI, Cloneable {
      * remove course from current object node if the course is present
      */
     public void removeCourse(String courseName) {
-        if (null != courseList && courseList.contains(courseName))
+        if (null != courseList) //&& courseList.contains(courseName))
             courseList.remove(courseName);
     }
 
@@ -76,7 +79,7 @@ public class Node implements ObserverI, SubjectI, Cloneable {
      * Interface implemented SubjectI
      */
     @Override
-    public void notifyAllObservers(String operation, String courseName) {
+    public void notify(String operation, String courseName) {
         for (ObserverI node : observerList)
             node.update(operation, courseName);
     }
@@ -90,7 +93,7 @@ public class Node implements ObserverI, SubjectI, Cloneable {
         try {
             clone = (Node) super.clone();
             clone.id = this.getId();
-            clone.courseList = new ArrayList <>(this.getCourseList());
+            clone.courseList = new TreeSet <>(this.getCourseList());
         } catch (CloneNotSupportedException ex) {
             ex.printStackTrace();
         }
@@ -128,9 +131,25 @@ public class Node implements ObserverI, SubjectI, Cloneable {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+
+        Node node = (Node) o;
+
+        return id == node.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     /**
      * Get current node ID
      */
+
     public int getId() {
         return id;
     }
@@ -138,7 +157,7 @@ public class Node implements ObserverI, SubjectI, Cloneable {
     /**
      * Get current node Course List
      */
-    public ArrayList <String> getCourseList() {
+    public SortedSet <String> getCourseList() {
         return courseList;
     }
 
@@ -168,6 +187,16 @@ public class Node implements ObserverI, SubjectI, Cloneable {
      */
     public void setRight(Node right) {
         this.right = right;
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        if (id == node.getId())
+            return 0;
+        else if(id < node.getId())
+            return -1;
+        else
+            return 1;
     }
 }
 

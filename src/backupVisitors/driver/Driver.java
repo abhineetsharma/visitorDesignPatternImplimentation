@@ -4,10 +4,7 @@ import backupVisitors.util.FileProcessor;
 import backupVisitors.util.Logger;
 import backupVisitors.util.Results;
 import backupVisitors.util.TreeBuilder;
-import backupVisitors.visitor.FullTimeStatusVisitorImpl;
-import backupVisitors.visitor.SortedRecordsVisitorImpl;
-import backupVisitors.visitor.IdenticalRecordsVisitorImpl;
-import backupVisitors.visitor.TreeVisitorI;
+import backupVisitors.visitor.*;
 
 
 /**
@@ -58,10 +55,14 @@ public class Driver {
                 Logger.log(String.format("Input File: %s", inputFile));
                 FileProcessor inputFileProcessor = new FileProcessor(inputFile);
 
-                TreeBuilder tree1 = new TreeBuilder();
+                TreeBuilder tree = new TreeBuilder();
 
-                tree1.setBackupTree1(new TreeBuilder());
-                tree1.setBackupTree2(new TreeBuilder());
+                tree.setBackupTree1(new TreeBuilder());
+                tree.setBackupTree2(new TreeBuilder());
+
+                TreeBuilder backupTree1 = tree.getBackupTree1();
+                TreeBuilder backupTree2 = tree.getBackupTree2();
+
                 String str;
 
                 Driver driver = new Driver();
@@ -74,11 +75,11 @@ public class Driver {
                     int id = st.id;
                     String courseName = st.courseName;
                     String msg = String.format("For ID: %d Course name added : %s",id,courseName);
-                    String rst = tree1.insertNode(id,courseName);
-                    //results.storeNewResult( msg+" "+rst);
+                    String rst = tree.insertCourseForId(id,courseName);
+                    results.storeNewResult( msg+" "+rst);
                 }
-                //results.addTextSeprator();
-                //results.storeNewResult("Delete Operation\n");
+                results.addTextSeprator();
+                results.storeNewResult("Delete Operation\n");
                 if (args.length > 1) {
                     String deleteFile = args[1];
                     Logger.log(String.format("delete File: %s", deleteFile));
@@ -90,9 +91,9 @@ public class Driver {
                         if (null == studentInfo) continue;
                         int id = studentInfo.id;
                         String courseName = studentInfo.courseName;
-                        String st  =tree1.removeCourseFromNode(id,courseName);
+                        String st  =tree.removeCourseFromNodeAndObservers(id,courseName);
                         String msg = String.format("For ID: %d Course name deleted : %s Course Enrolled: %s",id,courseName, st);
-                        //results.storeNewResult(msg);
+                        results.storeNewResult(msg);
                     }
                 } else {
                     Logger.log("Delete file needed for execution");
@@ -145,27 +146,30 @@ public class Driver {
                 results.storeNewResult("Done, 3 output file generated");
                 results.writeToStdout();
 
-                TreeVisitorI FullTimeStatusVisitor = new FullTimeStatusVisitorImpl();
+                TreeVisitorI fullTimeStatusVisitor = new FullTimeStatusVisitorImpl();
                 TreeVisitorI sortedVisitor = new SortedRecordsVisitorImpl();
-                TreeVisitorI identicalRecords = new IdenticalRecordsVisitorImpl();
-                tree1.accept(FullTimeStatusVisitor);
-                tree1.accept(sortedVisitor);
-                tree1.accept(identicalRecords);
+                TreeVisitorI identicalRecordsVisitor = new IdenticalRecordsVisitorImpl();
+                TreeVisitorI statsVisitors = new StatsVisitorsImpl();
+
+                tree.accept(fullTimeStatusVisitor);
+                tree.accept(statsVisitors);
+                backupTree1.accept(sortedVisitor);
+                backupTree2.accept(identicalRecordsVisitor);
 
                 if (null != results1) {
-                    tree1.printNode(results1);
-                    results1.writeToStdout();
-//                    results1.writeToFile();
+                    //tree.printNode(results1);
+                    //results1.writeToStdout();
+                    //results1.writeToFile();
                 }
                 if (null != results2) {
-                    tree1.getBackupTree1().printNode(results2);
-                    results2.writeToStdout();
-//                    results2.writeToFile();
+                    //tree.getBackupTree1().printNode(results2);
+                    //results2.writeToStdout();
+                    //results2.writeToFile();
                 }
                 if (null != results3) {
-                    tree1.getBackupTree2().printNode(results3);
-                    results3.writeToStdout();
-//                    results3.writeToFile();
+                    //tree.getBackupTree2().printNode(results3);
+                    //results3.writeToStdout();
+                    //results3.writeToFile();
                 }
 
 
