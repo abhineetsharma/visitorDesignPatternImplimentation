@@ -1,5 +1,7 @@
 package backupVisitors.myTree;
 
+import backupVisitors.util.Logger;
+
 import java.util.SortedSet;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -14,17 +16,25 @@ public class Node implements ObserverI, SubjectI, Cloneable ,Comparable<Node>{
     private SortedSet<String> courseList;
     private Node left;
     private Node right;
+    public enum Action{INSERT,DELETE};
+
+    Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
+    Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
+    Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
 
     /**
      * Parametrised constructor : accepts id of typr int and courseName of type String
      * Return a Student Info object
      */
     public Node(int idI, String courseName) {
+
         id = idI;
         left = null;
         right = null;
         addCourse(courseName);
-
+        Logger.addTextSeparator(CONSTRUCTOR);
+        Logger.writeMessage(String.format("Node Constructor: Object Crested with Id : %d and course %s", id, courseName),CONSTRUCTOR);
+        Logger.addTextSeparator(CONSTRUCTOR);
     }
 
     /**
@@ -79,7 +89,7 @@ public class Node implements ObserverI, SubjectI, Cloneable ,Comparable<Node>{
      * Interface implemented SubjectI
      */
     @Override
-    public void notify(String operation, String courseName) {
+    public void notify(Action operation, String courseName) {
         for (ObserverI node : observerList)
             node.update(operation, courseName);
     }
@@ -119,13 +129,13 @@ public class Node implements ObserverI, SubjectI, Cloneable ,Comparable<Node>{
      * Interface implemented ObserverI
      */
     @Override
-    public void update(String operation, String courseName) {
+    public void update(Action operation, String courseName) {
 
-        switch (operation.trim().toLowerCase()) {
-            case "delete":
+        switch (operation) {
+            case DELETE:
                 removeCourse(courseName);
                 break;
-            case "insert":
+            case INSERT:
                 addCourse(courseName);
                 break;
         }

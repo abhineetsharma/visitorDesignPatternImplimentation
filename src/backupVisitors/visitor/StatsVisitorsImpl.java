@@ -1,6 +1,8 @@
 package backupVisitors.visitor;
 
 import backupVisitors.myTree.Node;
+import backupVisitors.util.FileProcessor;
+import backupVisitors.util.Logger;
 import backupVisitors.util.TreeBuilder;
 
 import java.util.ArrayList;
@@ -11,13 +13,27 @@ import java.util.Collections;
  */
 public class StatsVisitorsImpl implements TreeVisitorI {
     private ArrayList <Character> courseList;
+    private StringBuilder printString;
+
+    Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
+    Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
+    Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
+
+    public StatsVisitorsImpl(){
+        printString = new StringBuilder();
+        courseList = new ArrayList <>();
+        Logger.addTextSeparator(CONSTRUCTOR);
+        Logger.writeMessage(String.format("StatsVisitorsImpl Constructor: Object Crested "),CONSTRUCTOR);
+        Logger.addTextSeparator(CONSTRUCTOR);
+    }
 
     @Override
-    public void visit(TreeBuilder tree) {
-        System.out.println("StatsVisitors");
-        courseList = new ArrayList <>();
+    public void visit(TreeBuilder tree,String outputFilePath) {
+        //System.out.println("StatsVisitors");
         traverse(tree.getRoot(), tree);
         process();
+        FileProcessor fileProcessor = new FileProcessor();
+        fileProcessor.writeToFile(printString.toString(),outputFilePath);
     }
 
     private void traverse(Node node, TreeBuilder tree) {
@@ -34,12 +50,16 @@ public class StatsVisitorsImpl implements TreeVisitorI {
 
     private void process() {
         Collections.sort(courseList);
-        System.out.println(courseList.toString());
+//        System.out.println(courseList);
+//        for(Character c : courseList){
+//            System.out.print((int)c+", ");
+//        }
         char median = getMedian();
-        System.out.println("Median : " + median);
+        String msg1 = String.format("Median : %s", median);
         char mean = getMean();
-        System.out.println("Mean : " + mean);
-
+        String msg2 = String.format("Mean : %s", mean);
+        addToStoredString(msg1);
+        addToStoredString(msg2);
     }
 
     private char getMedian() {
@@ -47,8 +67,7 @@ public class StatsVisitorsImpl implements TreeVisitorI {
         int index = size / 2 - 1;
         char c;
         if (size % 2 == 0) {
-
-            System.out.println(courseList.get(index) + " " + courseList.get(index + 1));
+            //System.out.println(courseList.get(index) + " " + courseList.get(index + 1));
             float a = (float) courseList.get(index);
             float b = (float) courseList.get(index + 1);
             float f = a + b;
@@ -72,5 +91,13 @@ public class StatsVisitorsImpl implements TreeVisitorI {
         a = (char) Math.ceil(f);
 
         return a;
+    }
+
+    private void addToStoredString(String str){
+        if (null == printString) {
+            printString = new StringBuilder();
+        }
+        str = String.format("%s%s", str, "\n");
+        printString.append(str);
     }
 }

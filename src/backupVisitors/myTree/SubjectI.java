@@ -8,5 +8,5 @@ interface SubjectI {
 
     void registerObserver(ObserverI observer);
     void removeObserver(ObserverI observer);
-    void notify(String opration, String courseName);
+    void notify(Node.Action operation, String courseName);
 }

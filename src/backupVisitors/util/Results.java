@@ -9,21 +9,27 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
     private StringBuilder stringBuilderStorage = new StringBuilder();
     private String outputPath;
 
+    Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
+    Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
+    Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
+
     public Results(String path) {
         outputPath = null;
         if (null != path && path.trim().length() > 0)
             outputPath = path;
+        Logger.addTextSeparator(CONSTRUCTOR);
+        Logger.writeMessage(String.format("Results Constructor: Object Crested with outputPath set to : %s",path),CONSTRUCTOR);
+        Logger.addTextSeparator(CONSTRUCTOR);
     }
 
     public void storeNewResult(Object obj) {
         String str = obj.toString();
-        Logger.log(str);
         str = String.format("%s%s", str, "\n");
         //System.out.println(str);
         stringBuilderStorage.append(str);
     }
 
-    public void addTextSeprator() {
+    public void addTextSeparator() {
         StringBuilder sbr = new StringBuilder("\n");
         for (int i = 0; i < 72; i++) {
             sbr.append("-");
@@ -61,12 +67,9 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            Logger.log(ex.toString());
             System.out.println("Error in printing stored string into the given output file");
             System.exit(1);
         }
-
-
     }
 
     @Override

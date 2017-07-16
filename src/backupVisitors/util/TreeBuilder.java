@@ -13,11 +13,18 @@ public class TreeBuilder {
     private TreeBuilder backupTree1;
     private TreeBuilder backupTree2;
 
+    Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
+    Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
+    Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
+
     /**
      * TreeBuilder constructor
      */
     public TreeBuilder() {
         root = null;
+        Logger.addTextSeparator(CONSTRUCTOR);
+        Logger.writeMessage(String.format("TreeBuilder Constructor: Object Crested "),CONSTRUCTOR);
+        Logger.addTextSeparator(CONSTRUCTOR);
     }
 
     /**
@@ -103,7 +110,7 @@ public class TreeBuilder {
 
         if (null != courseName && (node = searchNode(id)) != null) {
             node.addCourse(courseName);
-            node.notify("insert", courseName);
+            node.notify(Node.Action.INSERT, courseName);
         } else {
             node = new Node(id, courseName);
             insertNodeIntoTree(node);
@@ -113,7 +120,6 @@ public class TreeBuilder {
                 backupTree1.insertNodeIntoTree((Node) nodeBackUp1);
                 node.registerObserver(nodeBackUp1);
             } else {
-                Logger.log("nodeBackUp1 is null");
             }
 
             ObserverI nodeBackUp2 = node.clone();
@@ -121,7 +127,6 @@ public class TreeBuilder {
                 backupTree2.insertNodeIntoTree((Node) nodeBackUp2);
                 node.registerObserver(nodeBackUp2);
             } else {
-                Logger.log("nodeBackUp2 is null");
             }
 
         }
@@ -136,7 +141,7 @@ public class TreeBuilder {
 
         if ((node = searchNode(id)) != null) {
             node.removeCourse(courseName);
-            node.notify("delete", courseName);
+            node.notify(Node.Action.DELETE, courseName);
         }
         return node.getCourseList().size() > 0 ? node.getCourseList().toString() : "No course enrolled";
     }
@@ -144,8 +149,8 @@ public class TreeBuilder {
     /**
      * Visitor pattern accept method implementation
      */
-    public void accept(TreeVisitorI visitor) {
-        visitor.visit(this);
+    public void accept(TreeVisitorI visitor,String outputFilePath) {
+        visitor.visit(this,outputFilePath);
     }
 
     public Node getRoot() {
