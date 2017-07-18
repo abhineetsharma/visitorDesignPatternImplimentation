@@ -23,7 +23,6 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
         Logger.writeMessage(String.format("IdenticalRecordsVisitorImpl Constructor: Object Crested "),CONSTRUCTOR);
         Logger.addTextSeparator(CONSTRUCTOR);
     }
-
     @Override
     public void visit(TreeBuilder tree,String outputFilePath) {
         traverse(tree.getRoot());
@@ -31,7 +30,6 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
         FileProcessor fileProcessor = new FileProcessor();
         fileProcessor.writeToFile(printString.toString(),outputFilePath);
     }
-
     private void traverse(Node node) {
         if (node != null) {
             traverse(node.getRight());
@@ -39,7 +37,6 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
             traverse(node.getLeft());
         }
     }
-
     private void process(Node node) {
         if (null != node) {
             int id = node.getId();
@@ -57,7 +54,6 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
 
         }
     }
-
     private void iterateRecords() {
         Map<String, SortedSet <Integer>> orderedMap = new TreeMap(courseRecords);
         int i=1;
@@ -70,7 +66,6 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
             addToStoredString(str);
         }
     }
-
     private String beautifyString(String str) {
         str = str.substring(1, str.length() - 1);
         return str;

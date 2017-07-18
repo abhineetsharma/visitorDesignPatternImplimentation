@@ -27,7 +27,7 @@ public class FullTimeStatusVisitorImpl implements TreeVisitorI{
         Node root = tree.getRoot();
         traverse(root,tree);
     }
-    public void traverse( Node node,TreeBuilder tree) {
+    private void traverse( Node node,TreeBuilder tree) {
         if (node != null) {
             traverse( node.getLeft(),tree);
             if(null != node.getCourseList() && !node.getCourseList().contains("S") && node.getCourseList().size()<3){

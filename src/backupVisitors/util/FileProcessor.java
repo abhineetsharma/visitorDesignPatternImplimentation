@@ -49,11 +49,12 @@ public class FileProcessor{
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Logger.writeMessage(e.getMessage(),FILE_PROCESSOR);
                     System.exit(1);
                 }
             }
         } else {
-            System.exit(1);
+            Logger.writeMessage("Error in reading file passed", FILE_PROCESSOR);
         }
     }
 
@@ -71,7 +72,7 @@ public class FileProcessor{
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error in readLine, check log file for information");
+                System.out.println("Error in readLine, check log for information");
                 System.exit(1);
             }
         }
@@ -88,8 +89,9 @@ public class FileProcessor{
     }
 
     public void writeToFile(String content,String outputFilePath) {
-        //System.out.println(content);
         Logger.writeMessage(content,INFO);
+        Logger.writeMessage(content,FILE_PROCESSOR);
+        Logger.writeMessage(String.format("Write to file %s started",outputFilePath),FILE_PROCESSOR);
         File file;
         try {
             if (null != outputFilePath && outputFilePath.trim().length() > 0) {
@@ -102,8 +104,12 @@ public class FileProcessor{
                     String str = content;
                     writer.write(str);
                 }
+                Logger.writeMessage(String.format("Write to file %s done",outputFilePath),FILE_PROCESSOR);
+                Logger.addTextSeparator(FILE_PROCESSOR);
+
             } else {
                 String msg = "No output file found, file either is null or a blank string";
+                Logger.writeMessage(msg,FILE_PROCESSOR);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
