@@ -46,7 +46,7 @@
     </target>
 
     <target name="run" depends="jar">
-        <java jar="${BUILD}/jar/backupVisitors.jar" fork="true">
+        <java jar="${BUILD}/jar/studentCoursesBackup.jar" fork="true">
             <arg value="${arg0}"/>
             <arg value="${arg1}"/>
             <arg value="${arg2}"/>

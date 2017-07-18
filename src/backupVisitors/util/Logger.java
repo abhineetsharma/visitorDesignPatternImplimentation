@@ -34,10 +34,11 @@ public class Logger {
 //        debugLevel = levelIn;
 //    }
 
-    public static void writeMessage(String message, DebugLevel levelIn) {
+    public static String writeMessage(String message, DebugLevel levelIn) {
 
         if (levelIn == debugLevel )
             System.out.println(message);
+        return message;
     }
 
     @Override

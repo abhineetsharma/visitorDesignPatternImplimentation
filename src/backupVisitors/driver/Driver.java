@@ -2,6 +2,7 @@ package backupVisitors.driver;
 
 import backupVisitors.util.FileProcessor;
 import backupVisitors.util.Logger;
+import backupVisitors.util.Results;
 import backupVisitors.util.TreeBuilder;
 import backupVisitors.visitor.*;
 
@@ -35,32 +36,33 @@ public class Driver {
             }
 
         } catch (NumberFormatException ex) {
-
+            Logger.writeMessage(ex.getMessage(),INFO);
         }
         return studentInfo;
     }
-
+    static Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
+    static Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
+    static Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
     public static void main(String[] args) {
 
 
 
-        Logger.DebugLevel INFO = Logger.DebugLevel.INFO;
-        Logger.DebugLevel CONSTRUCTOR = Logger.DebugLevel.CONSTRUCTOR;
-        Logger.DebugLevel FILE_PROCESSOR = Logger.DebugLevel.FILE_PROCESSOR;
+
+        Results results = new Results(null);
 
         try {
+            results.storeNewResult("Process start...");
 
-            if (null != args && args.length > 0) {
-                if(args.length>5){
+            if (null != args && args.length > 0 && !args[0].equalsIgnoreCase("${arg0}") ) {
+                if(args.length>5 && !args[5].equalsIgnoreCase("${arg5}") ){
                     try {
                         int num = Integer.parseInt(args[5]);
                         Logger.setDebugValue(num);
-
                     }catch (NumberFormatException ex){
                         ex.printStackTrace();
                     }
                 }
-                Logger.writeMessage("Operation Begin",INFO);
+                results.storeNewResult(Logger.writeMessage("Operation Begin",INFO));
                 String inputFile = args[0];
                 Logger.writeMessage(String.format("Input File : %s", inputFile),INFO);
                 Logger.addTextSeparator(INFO);
@@ -80,7 +82,7 @@ public class Driver {
 
                 //insert into the tree
 
-                Logger.writeMessage(String.format("Insert into the tree"),INFO);
+                results.storeNewResult(Logger.writeMessage(String.format("Insert into the tree"),INFO));
                 while ((str = inputFileProcessor.readLine()) != null) {
                     StudentInfo st = driver.processString(str);
                     if (null == st)
@@ -92,9 +94,11 @@ public class Driver {
                     Logger.writeMessage(String.format("%s %s", msg, rst),Logger.DebugLevel.INFO);
                 }
                 Logger.addTextSeparator(INFO);
-                Logger.writeMessage("Delete Operation",INFO);
-                if (args.length > 1) {
+                results.storeNewResult(Logger.writeMessage("Delete Operation",INFO));
+                if (args.length > 1 && args[1].trim().length()>0 && !args[1].equalsIgnoreCase("${arg4}") ) {
                     String deleteFile = args[1];
+
+
                     FileProcessor deleteFileProcessor = new FileProcessor(deleteFile);
 
                     //delete course from a tree
@@ -108,7 +112,8 @@ public class Driver {
                         Logger.writeMessage(msg,INFO);
                     }
                 } else {
-                    Logger.writeMessage("Error : Delete file needed for execution",INFO);
+                    results.storeNewResult(Logger.writeMessage("Error : Delete file needed for execution",INFO));
+                    results.writeToStdout();
                     System.exit(1);
                 }
 
@@ -119,37 +124,41 @@ public class Driver {
                 TreeVisitorI identicalRecordsVisitor = new IdenticalRecordsVisitorImpl();
                 TreeVisitorI statsVisitors = new StatsVisitorsImpl();
 
-                tree.accept(fullTimeStatusVisitor,"");
+                tree.accept(fullTimeStatusVisitor,null);
 
-                if (args.length > 2 && args[2].trim().length() > 0) {
+                if (args.length > 2 && args[2].trim().length() > 0 && !args[2].equalsIgnoreCase("${arg2}") ) {
                     String outputFile1 = args[2];
                     backupTree1.accept(statsVisitors,outputFile1);
                 }
                 else {
-                    Logger.writeMessage("Output 1 file needed for execution",INFO);
+                    results.storeNewResult(Logger.writeMessage("Error: Output 1 file needed for execution",INFO));
+                    results.writeToStdout();
                     System.exit(1);
                 }
-                if (args.length > 3 && args[3].trim().length() > 0) {
+                if (args.length > 3 && args[3].trim().length() > 0 && !args[3].equalsIgnoreCase("${arg3}") ) {
                     String outputFile2 = args[3];
                     tree.accept(sortedVisitor,outputFile2);
                 }
                 else {
-                    Logger.writeMessage("Error::Output 2 file needed for execution",INFO);
+                    results.storeNewResult(Logger.writeMessage("Error: Output 2 file needed for execution",INFO));
+                    results.writeToStdout();
                     System.exit(1);
                 }
-                if (args.length > 4 && args[4].trim().length() > 0) {
+                if (args.length > 4 && args[4].trim().length() > 0 && !args[4].equalsIgnoreCase("${arg4}") ) {
                     String outputFile3 = args[4];
                     backupTree2.accept(identicalRecordsVisitor,outputFile3);
 
                 }
                 else {
-                    Logger.writeMessage("Error:Output 3 file needed for execution",INFO);
+                    results.storeNewResult(Logger.writeMessage("Error: Output 3 file needed for execution",INFO));
+                    results.writeToStdout();
                     System.exit(1);
                 }
-                Logger.writeMessage("Done, 3 output file generated",INFO);
+                results.storeNewResult(Logger.writeMessage("Done, 3 output file generated",INFO));
+                results.writeToStdout();
             } else {
-                Logger.writeMessage("Error: No arguments pass, Input file needed for execution",INFO);
-
+                results.storeNewResult(Logger.writeMessage("Error: No arguments pass, Input file needed for execution",INFO));
+                results.writeToStdout();
                 System.exit(1);
             }
         } finally {
