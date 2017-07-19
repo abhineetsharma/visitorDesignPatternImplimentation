@@ -56,13 +56,14 @@ public class IdenticalRecordsVisitorImpl implements TreeVisitorI {
     }
     private void iterateRecords() {
         Map<String, SortedSet <Integer>> orderedMap = new TreeMap(courseRecords);
+        addToStoredString("Identical Records Visitor");
         int i=1;
         for (Map.Entry <String, SortedSet <Integer>> entry : orderedMap.entrySet()) {
             String courseEnrolled = entry.getKey();
 
             SortedSet <Integer> studentsEnrolled = entry.getValue();
 
-            String str = String.format("Group : %d Course Names: %s Students Enrolled: %s%n", i++,beautifyString(courseEnrolled), beautifyString(studentsEnrolled.toString()));
+            String str = String.format("Group : %2d Course Names: %-20s Students Enrolled: %s", i++,beautifyString(courseEnrolled), beautifyString(studentsEnrolled.toString()));
             addToStoredString(str);
         }
     }

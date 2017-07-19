@@ -18,11 +18,11 @@ public class Logger {
             case 1:
                 debugLevel = DebugLevel.FILE_PROCESSOR;
                 break;
-            case 3:
-                debugLevel = DebugLevel.INFO;
-                break;
             case 2:
                 debugLevel = DebugLevel.CONSTRUCTOR;
+                break;
+            case 3:
+                debugLevel = DebugLevel.INFO;
                 break;
             default:
                 debugLevel = DebugLevel.NONE;

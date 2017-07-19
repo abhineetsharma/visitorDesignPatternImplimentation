@@ -24,6 +24,7 @@ public class SortedRecordsVisitorImpl implements TreeVisitorI {
     }
     @Override
     public void visit(TreeBuilder tree,String outputFilePath) {
+        addToStoredString("Sorted Records Visitor");
         traverse(tree.getRoot());
         FileProcessor fileProcessor= new FileProcessor();
         fileProcessor.writeToFile(printString.toString(),outputFilePath);
@@ -41,8 +42,7 @@ public class SortedRecordsVisitorImpl implements TreeVisitorI {
         if(null == printString){
             printString = new StringBuilder();
         }
-        str = String.format("%s%s", str, "\n");
-        //System.out.println(str);
+        str = str.concat("\n");
         printString.append(str);
     }
     private String beautifyString(String str) {
