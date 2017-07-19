@@ -58,6 +58,7 @@ public class Driver {
                         int num = Integer.parseInt(args[5]);
                         Logger.setDebugValue(num);
                     } catch (NumberFormatException ex) {
+                        results.storeNewResult("Error in the number passed to the Logger");
                         ex.printStackTrace();
                     }
                 }
@@ -81,7 +82,7 @@ public class Driver {
 
                 //insert into the tree
 
-                results.storeNewResult(Logger.writeMessage(String.format("Insert into the tree"), INFO));
+                results.storeNewResult(Logger.writeMessage(String.format("Insert operation"), INFO));
                 while ((str = inputFileProcessor.readLine()) != null) {
                     StudentInfo st = driver.processString(str);
                     if (null == st)
@@ -156,7 +157,7 @@ public class Driver {
                 results.storeNewResult(Logger.writeMessage("Process done, 3 output file generated", INFO));
             } else {
                 results.addTextSeparator();
-                results.storeNewResult(Logger.writeMessage("Error: No arguments pass, Input file needed for execution", INFO));
+                results.storeNewResult(Logger.writeMessage("Input file needed for execution", INFO));
                 results.writeToStdout();
                 System.exit(1);
             }
